@@ -225,7 +225,7 @@ private
 
 	home = begin
 		ps = Gem::GemPathSearcher.new
-		dir = ps.lib_dirs_for(ps.find('priekhlazh')).split('/')
+		dir = ps.lib_dirs_for(ps.find('priehlazx')).split('/')
 		dir.pop
 		dir.join('/')
 	    rescue NameError
