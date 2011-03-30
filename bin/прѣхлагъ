@@ -4,7 +4,7 @@
 require 'optparse'
 # check if priehlazx is available as not-a-gem
 begin
-  $: << '../lib'
+  $: << '../lib' << './lib'
   require 'priehlazx'
 rescue LoadError
   begin require 'rubygems'; rescue LoadError; end
@@ -22,6 +22,7 @@ begin
     цѣль = nil
     истокъ = nil
     debug = nil
+    list = false
 
     ARGV.options do |o|
     script_name = File.basename($0)
@@ -50,6 +51,8 @@ begin
                 "Acquire RegExp for the code page") { |i| re_cp_w = i }
         o.on("-r", "--acquire-regexp=val", String,
                 "Acquire RegExp for the code page") { |i| re_cp = i }
+        o.on("-l", "--list-codepages", String,
+                "List available codepages and exit") { |i| list = true }
         o.on("-d", "--set-debug-info-level=val", String,
                 "Set debug information log level")  { |i| $debug_Priehlazx = i.to_i(16) }
 
@@ -59,12 +62,44 @@ begin
 
         o.parse!
 
-        unless re_cp or re_cp_w or istring or ifile
+        unless re_cp or re_cp_w or istring or ifile or list
             $stderr.puts o; exit 1
         end
     end
 
     pl = Priehlazx.new
+
+    if list
+	puts "Available codepages are:"
+	pl.кодачицы.keys.sort.each do |име|
+	    описаніе_н = pl.кодачицы[име].unpack("U*")
+#	    ѯ = ((описаніе_н.size - 1) / 56) * 56
+	    описаніе_н_дл = описаніе_н.size
+	    ѯ = 55
+	    while ѯ < описаніе_н_дл
+		if (ѯ.downto(ѯ - 55) do |ѱ|
+		    зн = [ описаніе_н[ѱ] ].pack('U*')
+		    if зн =~ /[\.,!?:;\(\)@#\$%\^&\*"'\|\\\/\[\]]/
+			описаніе_н.insert(ѱ, [ 0xA ] + Array.new(24, 0x20))
+			описаніе_н_дл += 1
+			ѯ += 57
+			break nil
+		    elsif зн == " "
+			описаніе_н[ѱ] = [ 0xA ] + Array.new(24, 0x20)
+			ѯ += 56 # 80 - 2 - 20 - 2
+			break nil
+		    end
+		end)
+		    # не найден пробел или знаки препинания
+		    описаніе_н.insert(ѯ, [ 0xA ] + Array.new(24, 0x20))
+		    описаніе_н_дл += 1
+		    ѯ += 57
+		end
+	    end
+	    printf "  %-20s  #{описаніе_н.flatten.pack("U*")}\n", име
+	end
+	exit
+    end
 
     if re_cp
         puts pl.пръ(re_cp)

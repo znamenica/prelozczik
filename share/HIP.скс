@@ -1,4 +1,7 @@
 имя: UTF8/HIP
+описаніе:
+  ру: Независимое представленіе церковныхъ, древнеславянскихъ и древнегрѣческихъ текстовъ на основѣ 8-битной обобщенной кодировки
+  ан: Invariant representation of church, old-slavic, and old-greek texts, based on UTF 8-bit coding
 знаци:
   въводъ: ѯA
   пробѣлъ: ѯ20
