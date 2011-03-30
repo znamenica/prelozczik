@@ -1,0 +1,93 @@
+#!/usr/bin/ruby -KU
+#<Encoding:UTF-8>
+
+require 'optparse'
+# check if priehlazx is available as not-a-gem
+begin
+  $: << '../lib'
+  require 'priehlazx'
+rescue LoadError
+  begin require 'rubygems'; rescue LoadError; end
+  require 'priehlazx'
+end
+
+begin
+    dest = File.expand_path(File.dirname($0))
+    ifile = nil
+    ofile = nil
+    istring = nil
+    ostring = nil
+    debug = nil
+    re_cp = re_cp_w = nil
+    цѣль = nil
+    истокъ = nil
+    debug = nil
+
+    ARGV.options do |o|
+    script_name = File.basename($0)
+
+        o.set_summary_indent('  ')
+        o.banner =    "Usage: #{script_name} [OPTIONS]"
+        o.separator   ""
+        o.separator   "Mandatory arguments to long options are mandatory for " +
+                "short options too."
+
+        o.on("-i", "--input-file=val", String,
+                "Input file to convert")	    { |i| ifile = IO.read(i) }
+        o.on("--", "--stdin-input", String,
+                "Read standard input to convert")   { |i| ifile = $stdin.read }
+        o.on("-o", "--output-file=val", String,
+                "Output file to convert")	    { |i| ofile = i }
+        o.on("-I", "--input-string=val", String,
+                "Input string to convert")	    { |i| istring = i }
+        o.on("-c", "--codepage=val", String,
+                "Target (and source) code page(s) " +
+                "separated with signs '<' or '>'")  { |i| i =~ /(.+)(<|>)(.+)/; $1 and
+						    ($2 == '<' and (цѣль = $1; истокъ = $3) or
+						    (цѣль = $3; истокъ = $1)) or
+						    (цѣль = i) }
+        o.on("-w", "--acquire-word-regexp=val", String,
+                "Acquire RegExp for the code page") { |i| re_cp_w = i }
+        o.on("-r", "--acquire-regexp=val", String,
+                "Acquire RegExp for the code page") { |i| re_cp = i }
+        o.on("-d", "--set-debug-info-level=val", String,
+                "Set debug information log level")  { |i| $debug_Priehlazx = i.to_i(16) }
+
+        o.separator ""
+
+        o.on_tail("-h", "--help", "Show this help message.") { $stderr.puts o; exit }
+
+        o.parse!
+
+        unless re_cp or re_cp_w or istring or ifile
+            $stderr.puts o; exit 1
+        end
+    end
+
+    pl = Priehlazx.new
+
+    if re_cp
+        puts pl.пръ(re_cp)
+    elsif re_cp_w
+        puts pl.пръ_сл(re_cp_w)
+    else
+        if цѣль
+            pl.цѣль = цѣль if цѣль
+            pl.истокъ = истокъ if истокъ
+        end
+
+        istring = ifile if ifile
+        ostring = pl.ими( istring, цѣль, истокъ )
+
+        if ofile
+            File.open(ofile,'w') do |f| f.puts ostring; end
+        elsif istring
+            puts ostring
+        end
+    end
+rescue
+    err = $!.to_s
+    err += "\t#{$@.join("\n\t")}" if $debug_Priehlazx.to_i > 0
+    puts err
+    exit 1
+end

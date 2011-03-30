@@ -1,0 +1,7 @@
+* http://rails-bestpractices.com/blog/posts/8-using-bundler-and-rvm-to-build-a-rubygem
+* http://rails-bestpractices.com/blog/posts/9-autotest-your-rubygem
+* http://blog.grayproductions.net/articles/bytes_and_characters_in_ruby_18
+* http://blog.grayproductions.net/articles/ruby_18_character_encoding_flaws
+* ruby code:
+    p [Encoding.default_external, Encoding.default_internal, __ENCODING__]
+
