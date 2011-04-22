@@ -2,7 +2,9 @@
 # encoding: UTF-8
 
 require 'yaml'
-require 'rdoba'
+require 'rdoba/debug'
+require 'rdoba/re'
+require 'rdoba/combinations'
 require 'прѣхлажь/version'
 
 class Priehlazx
@@ -379,7 +381,7 @@ private
                     знач = знач_н[кс_i]
                     next unless знач
 		    dbp24 "Значеніе #{знач.inspect} << #{знач_н.inspect}"
-                    бук = знач.get(0)
+                    бук = [ знач.unpack("U*")[0] ].pack("U*")
                     буквы[кс_i][бук] = {} unless буквы[кс_i][бук]
                     буквы[кс_i][бук][знач] = [] unless буквы[кс_i][бук][знач]
                     буквы[кс_i][бук][знач] << знач_н
@@ -405,7 +407,7 @@ public
         end
     end
 
-    def истокъ=(cp)
+    def истокъ=(кс)
         if кс and @кс[:имяна].include?(кс = кс.to_sym)
             @истокъ = кс
         else
@@ -483,7 +485,7 @@ public
         dbp22 "Знак: #{писмя.inspect}"
         while писмя and not писмя.empty?
             ѱ = 1
-            знк = писмя.get(0)
+            знк = [ писмя.unpack("U*")[0] ].pack("U*")
             dbp22 "Знак: #{знк.inspect}"
             реха = @кс[:буквы][исх_ѯ][знк]
 
