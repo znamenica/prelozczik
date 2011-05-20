@@ -12,12 +12,12 @@ Gem::Specification.new do |s|
   s.summary      = 'priehlazx is char and text conversion utility and ruby library'
   s.description  = 'priehlazx is utility and ruby library to convert a char and text to a specific codepage'
 
-  s.executables  = [ 'прѣхлагъ', 'priehlahq' ]
+  s.executables  = [ 'прѣхлагъ', 'priehlag' ]
   s.rubyforge_project = "priehlazx"
 
   s.required_rubygems_version = '>= 1.6.0'
 
-  s.add_dependency 'rdoba', ">= 0"
+  s.add_dependency 'rdoba', ">= 0.1"
 
   s.add_development_dependency("bundler", ">= 1.0.0")
   s.add_development_dependency("rspec", "~> 2.0.1")
